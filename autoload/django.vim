@@ -40,3 +40,41 @@ function! django#toggle_server_buf() abort
         exe 'new' '#'.s:django_server_bufnr
     endif
 endfunction
+
+function! django#makemigrations() abort
+    let cmd = [g:django_python_path, g:django_manager_path, 'makemigrations']
+    let opts = {}
+    call django#utils#termstart(cmd, opts)
+endfunction
+
+function! django#sqlmigrate(...) abort
+    if a:0 < 2
+        if a:0 == 0
+            echoerr 'Need app_label and migration_name args!'
+        elseif a:0 == 1
+            echoerr 'Need migration_name arg!'
+        endif
+        return -1
+    endif
+
+    let app_label = a:1
+    let migration_name = a:2
+    let cmd = [g:django_python_path, g:django_manager_path, 'sqlmigrate',
+                \ app_label, migration_name]
+    let opts = {}
+    call django#utils#termstart(cmd, opts)
+
+    set ft=sql
+endfunction
+
+function! django#migrate() abort
+    let cmd = [g:django_python_path, g:django_manager_path, 'migrate']
+    let opts = {}
+    call django#utils#termstart(cmd, opts)
+endfunction
+
+function! django#showmigrations() abort
+    let cmd = [g:django_python_path, g:django_manager_path, 'showmigrations']
+    let opts = {}
+    call django#utils#termstart(cmd, opts)
+endfunction
