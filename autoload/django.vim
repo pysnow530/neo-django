@@ -3,13 +3,22 @@
 " Maintainer:	pysnow530 <pysnow530@163.com>
 " License:	This file is placed in the public domain.
 
-function! django#runserver() abort
+function! django#runserver(...) abort
     if exists('s:django_server_bufnr')
         echoerr 'Already running at buf #' . s:django_server_bufnr
         return
     endif
 
-    let cmd = [g:django_python_path, g:django_manager_path, 'runserver']
+    if a:0 >= 2
+        let ip = a:0
+        let port = a:1
+    else
+        let ip = g:django_server_ip
+        let port = g:django_server_port
+    endif
+
+    let cmd = [g:django_python_path, g:django_manager_path, 'runserver',
+                \ printf('%s:%s', ip, port)]
     let opts = {'bufpersist': 1}
     let bufnr = django#utils#termstart(cmd, opts)
     let s:django_server_bufnr = bufnr
@@ -75,6 +84,12 @@ endfunction
 
 function! django#showmigrations() abort
     let cmd = [g:django_python_path, g:django_manager_path, 'showmigrations']
+    let opts = {}
+    call django#utils#termstart(cmd, opts)
+endfunction
+
+function! django#shell() abort
+    let cmd = [g:django_python_path, g:django_manager_path, 'shell']
     let opts = {}
     call django#utils#termstart(cmd, opts)
 endfunction

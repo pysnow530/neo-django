@@ -23,12 +23,17 @@ endfunction
 
 call s:init_var('g:django_python_path', 'python')
 call s:init_var('g:django_manager_path', 'manage.py')
+call s:init_var('g:django_server_ip', '127.0.0.1')
+call s:init_var('g:django_server_port', '8000')
 " }}}
 
-command! DjangoRunserver call django#runserver()
+" {{{ commands
+command! DjangoRunserver call django#runserver(<f-args>)
 command! DjangoKillserver call django#killserver()
 command! DjangoToggleServerBuf call django#toggle_server_buf()
 command! DjangoMakemigrations call django#makemigrations()
 command! -nargs=* DjangoSqlmigrate call django#sqlmigrate(<f-args>)
 command! DjangoMigrate call django#migrate()
 command! DjangoShowmigrations call django#showmigrations()
+command! DjangoShell call django#shell()
+" }}}
