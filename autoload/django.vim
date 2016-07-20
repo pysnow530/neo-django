@@ -4,7 +4,7 @@
 " License:	This file is placed in the public domain.
 
 function! django#runserver(...) abort
-    if exists('s:django_server_bufnr')
+    if exists('s:django_server_bufnr') && s:django_server_bufnr > 0
         echoerr 'Already running at buf #' . s:django_server_bufnr
         return
     endif
@@ -71,9 +71,11 @@ function! django#sqlmigrate(...) abort
     let cmd = [g:django_python_path, g:django_manager_path, 'sqlmigrate',
                 \ app_label, migration_name]
     let opts = {}
-    call django#utils#termstart(cmd, opts)
+    let bufnr = django#utils#termstart(cmd, opts)
 
-    set ft=sql
+    if bufnr > 0
+        set ft=sql
+    endif
 endfunction
 
 function! django#migrate() abort
